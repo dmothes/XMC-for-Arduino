@@ -1,11 +1,14 @@
 #ifndef IFXRadarPulsedDoppler_h
 #define IFXRadarPulsedDoppler_h
-
-#include <Arduino.h>
 #include "arduino_adapt.h"
 
 class IFXRadarPulsedDoppler
 {
+private: 
+	bool result_handler_registered;
+	bool error_handler_registered;
+	Print *outDev;
+	
 public:
 	IFXRadarPulsedDoppler();
 
@@ -33,7 +36,7 @@ public:
  
 	// control functions
 	void initHW(void);
-    void registerResultCallback(void(*callBackPtr)); // register function to be called when algo process is done
+    void registerResultCallback(void(*callBackPtr)); // register function to be called when also process is done
     void registerErrorCallback(void(*callBackPtr)); // register function to be called in case of error
 	void begin(void);
 	void end(void); 
@@ -46,6 +49,12 @@ public:
 	float getVelocity(void); // get speed value with sign
 	uint8_t getDirection(void); // returns 0:no direction, 1:departing, 2:approaching
 	float getSpeed(void); // get speed value without sign
+	uint32_t getFrameCount(void); // get frame count of result
+	
+	// debug functions
+	void parameterDump(Print *outDev);
+	void parameterDump();
+	void setPrintDev(Print *outDev);
 };
 
 #endif

@@ -52,7 +52,7 @@
 
 #define PWM4_TIMER_PERIOD (2041U)  // Generate 490Hz @fCCU=1MHz
 
-#define PCLK 48000000u 
+#define PCLK 96000000u 
  
 #define PIN_SPI_SS    10
 #define PIN_SPI_MOSI  11
@@ -212,6 +212,35 @@ XMC_UART_t XMC_UART_0 =
 
 HardwareSerial Serial( &XMC_UART_0, &rx_buffer_0, &tx_buffer_0 );
 
-#endif // ARDUINO_MAIN
+// Serial Interrupt and event handling
+#ifdef __cplusplus
+extern "C" {
+#endif
+void serialEventRun( );
+void serialEvent( ) __attribute__((weak));
+
+
+void serialEventRun( )
+{
+if( serialEvent )
+  {
+  if( Serial.available( ) )
+    serialEvent( );
+  }
+}
+
+
+void USIC0_0_IRQHandler( )
+{
+Serial.IrqHandler( );
+}
+#ifdef __cplusplus
+}
+#endif
+#endif  /* ARDUINO_MAIN */
+
+#ifdef __cplusplus
+extern HardwareSerial Serial;
+#endif  /* cplusplus */
 
 #endif // PINS_ARDUINO_H_
